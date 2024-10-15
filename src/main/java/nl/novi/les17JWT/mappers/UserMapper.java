@@ -2,6 +2,7 @@ package nl.novi.les17JWT.mappers;
 
 import nl.novi.les17JWT.entities.User;
 import nl.novi.les17JWT.models.UserModel;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -9,10 +10,11 @@ public class UserMapper{
 
     private final RoleMapper roleMapper;
 
+    private final PasswordEncoder passwordEncoder;
 
-    public UserMapper(RoleMapper roleMapper) {
+    public UserMapper(RoleMapper roleMapper, PasswordEncoder passwordEncoder) {
         this.roleMapper = roleMapper;
-
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserModel fromEntity(User entity) {
@@ -35,7 +37,7 @@ public class UserMapper{
             return null;
         }
         User entity = new User(model.getId());
-        entity.setPassword(model.getPassword());
+        entity.setPassword(passwordEncoder.encode(model.getPassword()));
         entity.setUserName(model.getUserName());
         entity.setAreCredentialsExpired(model.areCredentialsExpired());
         entity.setEnabled(model.isEnabled());
